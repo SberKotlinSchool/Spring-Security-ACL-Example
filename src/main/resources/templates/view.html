@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
+<head>
+    <title th:text="@{'View '+ ${phone.toListString()}}"></title>
+</head>
+<body>
+<h1 th:text="@{'View '+ ${phone.toListString()}}"></h1>
+<p>
+    <a href="/app/list">Back to list</a>
+</p>
+<!--/*
+    Получим флаг доступа и воспользуемся им для установки readonly свойства у полей
+ */-->
+<form method="post" th:with="notEditable=!${#authorization.expr('hasPermission(#vars.phone,''DELETE'')')}">
+    <input
+            type="hidden"
+            th:name="${_csrf.parameterName}"
+            th:value="${_csrf.token}" />
+    <!--/*
+        Только для роли админа отобразим дополнительную информацию
+    */-->
+    <div sec:auth   orize="hasRole('ROLE_ADMIN')">
+        <h2 th:text="@{'Id: '+ ${phone.id}}"></h2>
+        <h3 th:text="@{'Owner: '+ ${phone.owner}}"></h3>
+    </div>
+
+    <p>
+        <label>Name:</label>
+        <input type="text" name="name" th:readonly="${notEditable}" th:value="${phone.name}"/>
+    </p>
+    <p>
+        <label>Phone:</label>
+        <input type="text" name="name" th:readonly="${notEditable}" th:value="${phone.phone}"/>
+    </p>
+
+    <!--/*
+    С помощью sec:authorize-acl можем проверять права доступа и отображать блок при их наличии
+    К сожалению данный аттрибут не позволяет комбинировать логику с другими выражениями, здесь применяется как пример
+    Лучше воспользоваться th:if="'hasPermission(#vars.phone,''DELETE'') or hasRole(''ADMIN'')'"
+    */-->
+    <div sec:authorize-acl="${phone} :: 'DELETE'">
+        <button type="submit">Update</button>
+        |
+        <a th:href="@{ '/app/remove/' + ${phone.id} }" style="color:red">Remove</a>
+    </div>
+</form>
+</body>
+</html>

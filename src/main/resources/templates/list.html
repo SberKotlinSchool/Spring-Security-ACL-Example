@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>List</title>
+</head>
+<body>
+<h1>List</h1>
+<p>
+    <a href="/app/add"><button>Add new</button></a>
+    <a href="/logout"><button>Logout</button></a>
+</p>
+<p th:each="phone:${phones}">
+    <a th:href="@{'view/' + ${phone.id}}" th:text="${phone.toListString()}"></a>
+</p>
+</body>
+</html>

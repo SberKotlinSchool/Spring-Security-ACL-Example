@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
+<head>
+    <title>Add</title>
+</head>
+<body>
+<h1>Add</h1>
+<p>
+    <a href="/app/list">Back to list</a>
+</p>
+<form method="post">
+    <input
+            type="hidden"
+            th:name="${_csrf.parameterName}"
+            th:value="${_csrf.token}"/>
+
+    <p>
+        <label>Name:</label>
+        <input type="text" name="name" placeholder="name"/>
+    </p>
+    <p>
+        <label>Phone:</label>
+        <input type="text" name="phone" placeholder="phone"/>
+    </p>
+    <!--/*
+        Только для роли админа отобразим возможность выбора видимости записи
+    */-->
+    <div sec:authorize="hasRole('ADMIN')">
+        <label for="public">Public</label>
+        <input id="public" type="radio" name="public" value="true" checked="checked"/>
+        <label for="private">Private</label>
+        <input id="private" type="radio" name="public" value="false"/>
+    </div>
+    <button type="submit">add</button>
+</form>
+</body>
+</html>
